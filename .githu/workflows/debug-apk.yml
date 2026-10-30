@@ -1,0 +1,19 @@
+name: Debug APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - run: chmod +x gradlew
+      - run: ./gradlew assembleDevDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bitchord-dev-debug
+          path: app/build/outputs/apk/dev/debug/*.apk
