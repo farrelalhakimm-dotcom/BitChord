@@ -164,6 +164,7 @@ import com.music.bitchord.data.lyrics.LyricLine
 import com.music.bitchord.data.lyrics.LyricsSource
 import com.music.bitchord.data.settings.LastPlayerScreen
 import com.music.bitchord.data.model.LikeStatus
+import com.music.bitchord.data.model.artworkAt
 import com.music.bitchord.data.model.PlaybackSourceType
 import com.music.bitchord.data.model.PLAYER_ART_PX
 import com.music.bitchord.data.model.Song
@@ -3286,7 +3287,31 @@ fun NowPlayingScreen(
                                         }
                                     },
                             )
-
+// Sampul memudar ke lagu berikutnya saat Automix
+if (!canvasRendered) {
+    val mixView = PlayerSettings.smartMixView.collectAsStateWithLifecycle()
+        val mixProgress = PlayerSettings.smartMixProgress.collectAsStateWithLifecycle()
+            val fadeView = mixView.value
+                if (fadeView != null) {
+                        AsyncImage(
+                                    model = fadeView.outgoing.artworkUrl.artworkAt(ART_PX),
+                                                contentDescription = null,
+                                                            contentScale = ContentScale.Crop,
+                                                                        modifier = Modifier.fillMaxSize(),
+                                                                                )
+                                                                                        AsyncImage(
+                                                                                                    model = fadeView.incoming.artworkUrl.artworkAt(ART_PX),
+                                                                                                                contentDescription = null,
+                                                                                                                            contentScale = ContentScale.Crop,
+                                                                                                                                        modifier = Modifier
+                                                                                                                                                        .fillMaxSize()
+                                                                                                                                                                        .graphicsLayer {
+                                                                                                                                                                                            val p = mixProgress.value.coerceIn(0f, 1f)
+                                                                                                                                                                                                                alpha = p * p * (3f - 2f * p)
+                                                                                                                                                                                                                                },
+                                                                                                                                                                                                                                        )
+                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                            }
                             // Where the clip plays when it can't have the banner:
                             // inside the same clip as the still art, taking the
                             // sleeve's corners, shadow and paused shrink for free.
